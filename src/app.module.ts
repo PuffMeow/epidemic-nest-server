@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-
-import { ApiModule } from './module/api/api.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ApiModule } from './module/client/api.module';
 
 @Module({
   imports: [ApiModule],
