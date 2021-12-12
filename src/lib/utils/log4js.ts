@@ -144,5 +144,6 @@ export function createLogInfo(params: ICreateLogParams): string {
   Query: ${JSON.stringify(params?.query || '')}
   Body: ${JSON.stringify(params?.body || '')}
   Response: ${JSON.stringify(params?.response || '')}
+  Exception: ${JSON.stringify(params?.exception) || ''}
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>`;
 }

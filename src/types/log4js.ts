@@ -20,4 +20,5 @@ export interface ICreateLogParams {
   params?: any;
   body?: any;
   response?: any;
+  exception?: any;
 }
