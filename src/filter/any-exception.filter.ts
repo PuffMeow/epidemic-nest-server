@@ -22,7 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const errorResponse = {
       data: null,
-      message: exception,
+      message: (exception as HttpException)?.message,
       success: false,
       statusCode: status,
     };
@@ -33,6 +33,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       url: req.url,
       code: status,
       response: errorResponse,
+      exception: exception,
     });
     Logger.error(logFormat);
 

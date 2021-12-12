@@ -20,9 +20,9 @@ async function bootstrap() {
   createSwaggerDoc(app);
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.useGlobalInterceptors(new TransformInterceptor());
   // 日志中间件
   app.use(logger);
   await app.listen(3000);
