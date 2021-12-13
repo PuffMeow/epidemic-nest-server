@@ -1,6 +1,7 @@
 import { CreateUserDto } from '@/dto/user';
 import { LocalAuthGuard } from '@/guards/admin/local-auth.guard';
 import { AuthService } from '@/service/admin/auth/auth.service';
+import { UserService } from '@/service/admin/user/user.service';
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -8,7 +9,10 @@ import { Request } from 'express';
 @ApiTags('后台接口')
 @Controller('admin')
 export class LoginController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
@@ -22,7 +26,7 @@ export class LoginController {
   @ApiCreatedResponse({
     description: '创建完返回除了密码以外的所有用户信息',
   })
-  async create(@Body() body: CreateUserDto) {
-    console.log(1);
+  async create(@Body() user: CreateUserDto) {
+    return this.userService.createUser(user);
   }
 }

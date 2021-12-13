@@ -4,6 +4,7 @@ import { Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { hashSync } from 'bcryptjs';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Role } from '@/types/role';
 
 export type UserDocument = User & Document;
 
@@ -15,8 +16,12 @@ export class User {
   @Prop({
     set: hashSync,
     required: true,
+    select: false,
   })
   password: string;
+
+  @Prop({ default: Role.User })
+  role: number;
 
   @Prop()
   email?: string;

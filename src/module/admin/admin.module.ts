@@ -3,7 +3,7 @@ import { LocalStrategy } from '@/lib/strategy/local.strategy';
 import { AuthService } from '@/service/admin/auth/auth.service';
 import { UserService } from '@/service/admin/user/user.service';
 import { Global, Module } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoginController } from './login/login.controller';
 
@@ -13,7 +13,7 @@ import { LoginController } from './login/login.controller';
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: String(process.env.JWT_SECRET), // 必须保证 String 类型
       signOptions: { expiresIn: '4h' },
     }),
   ],

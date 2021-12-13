@@ -10,6 +10,7 @@ import { logger } from './middleware/logger.middleware';
 import * as express from 'express';
 import { AllExceptionsFilter } from './filter/any-exception.filter';
 import * as helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
 
 // 从根目录 .env 文件获取配置
 env.config();
@@ -20,6 +21,7 @@ async function bootstrap() {
   app.enableCors();
 
   createSwaggerDoc(app);
+  app.useGlobalPipes(new ValidationPipe());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.useGlobalInterceptors(new TransformInterceptor());

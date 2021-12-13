@@ -4,7 +4,6 @@ import { ApiModule } from './module/client/api.module';
 import { AdminModule } from './module/admin/admin.module';
 
 @Module({
-  providers: [],
   imports: [
     ApiModule,
     AdminModule,

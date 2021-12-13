@@ -7,6 +7,10 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 
+interface IExceptionResponse {
+  message: string;
+}
+
 /** 错误过滤器 */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -24,6 +28,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message: message,
       success: false,
       statusCode: status,
+      exception: (exception.getResponse() as IExceptionResponse).message,
     };
 
     const logFormat = createLogInfo({
