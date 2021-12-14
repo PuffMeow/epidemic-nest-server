@@ -1,25 +1,26 @@
+import { ROLES_KEY } from '@/lib/decorator/role.decorator';
 import { Role } from '@/types/role';
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { AuthGuard } from '@nestjs/passport';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 
-export class RoleGuard implements CanActivate {
-  constructor(private readonly role: number) {}
+export class RolesGuard extends AuthGuard('jwt') {
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const { user } = context.switchToHttp().getRequest();
-    if (user?.role > this.role) {
-      throw new ForbiddenException('权限不足');
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log(this);
+    const canAct = await (super.canActivate(context) as Promise<boolean>);
+    console.log(canAct);
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (!requiredRoles) {
+      return true;
     }
-    return true;
+    const { user } = context.switchToHttp().getRequest();
+    return requiredRoles.some(role => user.roles?.includes(role));
   }
 }
-
-export const SuperAdminGuard = new RoleGuard(Role.SuperAdmin);
-export const AdminGuard = new RoleGuard(Role.Admin);
-export const OperatorGuard = new RoleGuard(Role.Operator);

@@ -21,7 +21,7 @@ export class User {
   password: string;
 
   @Prop({ default: Role.User })
-  role: number;
+  roles: number;
 
   @Prop()
   email?: string;

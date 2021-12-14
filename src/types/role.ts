@@ -1,10 +1,10 @@
 export enum Role {
   /** 超级管理员 */
-  SuperAdmin = 0,
+  SuperAdmin = 'super_admin',
   /** 普通管理员 */
-  Admin = 1,
+  Admin = 'admin',
   /** 运营 */
-  Operator = 2,
+  Operator = 'operator',
   /** 普通用户 */
-  User = 3,
+  User = 'user',
 }

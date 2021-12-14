@@ -1,7 +1,9 @@
 import { CreateUserDto } from '@/dto/user';
-import { LocalAuthGuard } from '@/guards/admin/local-auth.guard';
+import { LocalAuthGuard, JWTAuthGuard } from '@/guards';
+import { Roles } from '@/lib/decorator/role.decorator';
 import { AuthService } from '@/service/admin/auth/auth.service';
 import { UserService } from '@/service/admin/user/user.service';
+import { Role } from '@/types/role';
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -21,6 +23,7 @@ export class LoginController {
     return this.authService.login(req.user);
   }
 
+  @UseGuards(JWTAuthGuard)
   @Post('/createAdmin')
   @ApiOperation({ summary: '管理员创建' })
   @ApiCreatedResponse({
