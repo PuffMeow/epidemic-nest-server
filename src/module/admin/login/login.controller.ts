@@ -1,11 +1,11 @@
 import { CreateUserDto } from '@/dto/user';
-import { LocalAuthGuard, JWTAuthGuard } from '@/guards';
+import { LocalAuthGuard, JwtGuard } from '@/guards';
 import { Roles } from '@/lib/decorator/role.decorator';
 import { AuthService } from '@/service/admin/auth/auth.service';
 import { UserService } from '@/service/admin/user/user.service';
 import { Role } from '@/types/role';
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 @ApiTags('后台接口')
@@ -23,10 +23,17 @@ export class LoginController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JWTAuthGuard)
+  @UseGuards(JwtGuard)
+  @Roles(Role.User)
+  @Get('/test')
+  async test() {
+    return 'test';
+  }
+
+  @UseGuards(JwtGuard)
   @Post('/createAdmin')
   @ApiOperation({ summary: '管理员创建' })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: '创建完返回除了密码以外的所有用户信息',
   })
   async create(@Body() user: CreateUserDto) {

@@ -16,7 +16,6 @@ export class TransformInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Observable<IResponse> {
     const req: Request = context.getArgByIndex(1).req;
-
     return next.handle().pipe(
       map(data => {
         const logFormat = createLogInfo({

@@ -28,7 +28,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message: message,
       success: false,
       statusCode: status,
-      exception: (exception.getResponse() as IExceptionResponse).message,
     };
 
     const logFormat = createLogInfo({
@@ -36,7 +35,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       ip: req.ip,
       url: req.originalUrl,
       code: status,
-      response: errorResponse,
+      response: {
+        ...errorResponse,
+        exception: (exception.getResponse() as IExceptionResponse).message,
+      },
     });
 
     Logger.info(logFormat);

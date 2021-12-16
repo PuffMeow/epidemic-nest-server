@@ -1,3 +1,4 @@
+import configuration from '@/config/configuration';
 import { aliGatewayRequest } from '@/lib/requests/ali-gateway-api';
 import { Logger } from '@/lib/utils/log4js';
 import { Injectable } from '@nestjs/common';
@@ -11,8 +12,8 @@ export class EpidemicService {
       const res = await aliGatewayRequest({
         url,
         method: 'get',
-        appKey: process.env.ALI_APP_KEY,
-        appSecret: process.env.ALI_APP_SECRET,
+        appKey: configuration.aliAppKey,
+        appSecret: configuration.appSecret,
       });
 
       return res;

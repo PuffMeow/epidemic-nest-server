@@ -20,7 +20,11 @@ export class UserService {
 
   async findUser(username: string): Promise<User | undefined> {
     try {
-      return this.userModel.findOne({ username }).select('+password');
+      const res = await this.userModel
+        .findOne({ username })
+        .select('+password');
+
+      return res.toJSON();
     } catch (e) {
       Logger.error(e);
     }
