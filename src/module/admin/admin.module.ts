@@ -8,7 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
-import { LoginController } from './login/login.controller';
+import { UserController } from './user/user.controller';
 
 @Module({
   providers: [AuthService, UserService, LocalStrategy, JwtStrategy],
@@ -20,7 +20,7 @@ import { LoginController } from './login/login.controller';
       signOptions: { expiresIn: '4h' },
     }),
   ],
-  controllers: [LoginController],
+  controllers: [UserController],
   exports: [],
 })
 export class AdminModule {}

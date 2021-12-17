@@ -10,11 +10,18 @@ import { Request } from 'express';
 
 @ApiTags('后台接口')
 @Controller('admin')
-export class LoginController {
+export class UserController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
   ) {}
+
+  @UseGuards(JwtGuard)
+  @Roles(Role.User)
+  @Get('/test')
+  async test() {
+    return 'test';
+  }
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
@@ -24,18 +31,8 @@ export class LoginController {
   }
 
   @UseGuards(JwtGuard)
-  @Roles(Role.User)
-  @Get('/test')
-  async test() {
-    return 'test';
-  }
-
-  @UseGuards(JwtGuard)
-  @Post('/createAdmin')
+  @Post('/createUser')
   @ApiOperation({ summary: '管理员创建' })
-  @ApiOkResponse({
-    description: '创建完返回除了密码以外的所有用户信息',
-  })
   async create(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }

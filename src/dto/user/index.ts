@@ -1,6 +1,6 @@
 import { Role } from '@/types/role';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -11,10 +11,8 @@ export class CreateUserDto {
   @ApiProperty({ description: '密码' })
   readonly password: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({ description: '用户角色', default: Role.User })
-  readonly role: number;
+  readonly role?: number;
 
   @ApiPropertyOptional({ description: '邮箱' })
   readonly email?: string;

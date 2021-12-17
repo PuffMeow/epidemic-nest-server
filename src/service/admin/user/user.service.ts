@@ -10,6 +10,10 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async createUser(user: CreateUserDto) {
     try {
+      const isExitUser = await this.findUser(user.username);
+      if (isExitUser) {
+        return '该用户已存在';
+      }
       const createUser = await this.userModel.create(user);
       createUser.save();
       return '创建用户成功';
