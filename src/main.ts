@@ -19,8 +19,8 @@ async function bootstrap() {
 
   createSwaggerDoc(app);
   app.useGlobalPipes(new ValidationPipe());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '50mb' }));
   app.useGlobalInterceptors(new TransformInterceptor());
   // AllExceptionsFilter 要在 HttpExceptionFilter 的上面，
   // 否则 HttpExceptionFilter 就不生效了

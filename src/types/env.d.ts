@@ -7,8 +7,8 @@ namespace NodeJS {
     REDIS_URL_DEV: string;
     REDIS_URL_PRO: string;
     JWT_SECRET: string; // JWT 的设置密钥
-    ALI_APP_KEY: string; // 阿里云疫情接口 AppKey
-    ALI_APP_SECRET: string; // 阿里云疫情接口 AppSecret
+    BaiduApiKey: string;
+    BaiduApiSecret: string;
     [key: string]: any;
   }
 }

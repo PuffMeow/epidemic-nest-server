@@ -8,8 +8,8 @@ const configuration = {
   mongoUrl: isDev ? process.env.MONGO_URL_DEV : process.env.MONGO_URL_PRO,
   redisUrl: isDev ? process.env.REDIS_URL_DEV : process.env.REDIS_URL_PRO,
   jwtSecret: process.env.JWT_SECRET,
-  aliAppKey: process.env.ALI_APP_KEY,
-  appSecret: process.env.ALI_APP_SECRET,
+  baiduApiKey: process.env.BaiduApiKey,
+  baiduApiSecret: process.env.BaiduApiSecret,
 };
 
 export default configuration;
