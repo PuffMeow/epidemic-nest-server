@@ -10,6 +10,8 @@ const configuration = {
   jwtSecret: process.env.JWT_SECRET,
   baiduApiKey: process.env.BaiduApiKey,
   baiduApiSecret: process.env.BaiduApiSecret,
+  qqMapSecret: process.env.qqMapSecret,
+  qqMapKey: process.env.qqMapKey,
 };
 
 export default configuration;

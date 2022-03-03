@@ -1,6 +1,6 @@
 import { OcrDto } from '@/dto';
 import { EpidemicService } from '@/service/client/epidemic/epidemic.service';
-import { Body, Controller, Get, Header, Post } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('小程序-疫情防控')
@@ -20,5 +20,15 @@ export class EpidemicController {
   @ApiOkResponse({ description: '请求成功' })
   async imgOcr(@Body() ocrObj: OcrDto) {
     return await this.epidemicService.OCRService(ocrObj.image);
+  }
+
+  @Get('map')
+  @ApiOperation({ summary: '地图服务' })
+  @ApiOkResponse({ description: '请求成功' })
+  async map(
+    @Query('longtitude') longtitude: number,
+    @Query('latitude') latitude: number,
+  ) {
+    return await this.epidemicService.mapService({ longtitude, latitude });
   }
 }

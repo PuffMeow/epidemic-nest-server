@@ -40,10 +40,19 @@ $ npm run test:cov
 
 使用 mongodb 数据库
 相关 npm 包：mongoose @nestjs/mongoose
-Windows 本机启动 mongodb 数据库
+
+# Windows 本机启动 mongodb 数据库
+
+## 开发模式
+
+启动 redis, cd 到 redis 所在目录运行
 
 ```bash
-# 管理员模式启动数据库
+redis-server.exe redis.windows.conf
+```
+
+```bash
+# 在管理员模式下启动 mongodb 数据库
 net start MongoDB
 # 连接数据库
 mongo -u 账号 -p 密码

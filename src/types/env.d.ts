@@ -9,6 +9,8 @@ namespace NodeJS {
     JWT_SECRET: string; // JWT 的设置密钥
     BaiduApiKey: string;
     BaiduApiSecret: string;
+    qqMapKey: string;
+    qqMapSecret: string;
     [key: string]: any;
   }
 }

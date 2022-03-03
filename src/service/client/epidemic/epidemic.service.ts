@@ -1,9 +1,11 @@
 import { Logger } from '@/lib/utils/log4js';
-import { removeKeyInObject } from '@/lib/utils/utils';
+import { removeKeyInObject, sortKeyForUrlQuery } from '@/lib/utils/utils';
 import axios from 'axios';
 import CacheService from '@/service/tools/redisService';
+import * as md5 from 'md5';
 import { Injectable } from '@nestjs/common';
 import { getBaiduToken } from '@/lib/utils/request';
+import configuration from '@/config/configuration';
 
 @Injectable()
 export class EpidemicService {
@@ -18,16 +20,24 @@ export class EpidemicService {
         return cacheData;
       }
 
-      const res = await axios({
-        url: 'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5',
-        method: 'GET',
-      });
+      const res = await Promise.all([
+        // 基本疫情数据
+        axios({
+          url: 'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5',
+          method: 'GET',
+        }),
+        // 31 省市数据
+        axios({
+          method: 'post',
+          url: 'https://api.inews.qq.com/newsqa/v1/query/inner/publish/modules/list?modules=statisGradeCityDetail,diseaseh5Shelf',
+        }),
+      ]);
 
-      if (!res?.data) {
+      if (!res?.[0]?.data?.data || !res?.[1]?.data?.data) {
         return null;
       }
 
-      const data = JSON.parse(res.data.data);
+      const data = JSON.parse(res[0].data.data);
 
       const todayProvinceData = data.areaTree[0].children.map(item => {
         const {
@@ -60,6 +70,11 @@ export class EpidemicService {
         };
       });
 
+      // 根据疫情新增数从高到低排序
+      const epidemicProvinceList = res[1].data.data.statisGradeCityDetail.sort(
+        (a, b) => b.confirmAdd - a.confirmAdd,
+      );
+
       const result = {
         lastUpdateTime: data.lastUpdateTime,
         chinaAdd: data.chinaAdd,
@@ -67,6 +82,7 @@ export class EpidemicService {
         todayProvinceData,
         nowConfirmProvinceData,
         totalProvinceData,
+        epidemicProvinceList,
       };
 
       if (result) {
@@ -103,5 +119,26 @@ export class EpidemicService {
     });
 
     return res?.data?.results;
+  }
+
+  async mapService(location: { latitude: number; longtitude: number }) {
+    const sig = md5(
+      '/ws/geocoder/v1/?' +
+        sortKeyForUrlQuery(
+          `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}`,
+        ) +
+        configuration.qqMapSecret,
+    );
+
+    const res = await axios({
+      method: 'get',
+      url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}&sig=${sig}`,
+    });
+
+    if (!res?.data) {
+      return null;
+    }
+
+    return res.data;
   }
 }
