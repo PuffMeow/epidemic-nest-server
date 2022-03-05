@@ -6,6 +6,7 @@ import * as md5 from 'md5';
 import { Injectable } from '@nestjs/common';
 import { getBaiduToken } from '@/lib/utils/request';
 import configuration from '@/config/configuration';
+import { ITrackDetail } from './type';
 
 @Injectable()
 export class EpidemicService {
@@ -140,5 +141,49 @@ export class EpidemicService {
     }
 
     return res.data;
+  }
+
+  async getTrackList({
+    cityCode,
+    cityName,
+  }: {
+    cityName: string;
+    cityCode: string;
+  }) {
+    const res = await axios({
+      method: 'get',
+      url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/track_list/',
+      params: {
+        city_code: cityCode,
+        city_name: cityName,
+        activeWidget: 15,
+        show_poi_list: 1,
+      },
+    });
+
+    if (!res?.data?.data?.list) {
+      return null;
+    }
+
+    const day7 = [];
+    const day14 = [];
+
+    const currentTime = Math.floor(+new Date() / 1000);
+    res.data.data.list.forEach((item: ITrackDetail) => {
+      const differDay = Math.floor(
+        (currentTime - item.create_ts) / 24 / 60 / 60,
+      );
+      if (differDay <= 7) {
+        day7.push(item);
+      }
+      if (differDay <= 14) {
+        day14.push(item);
+      }
+    });
+    return {
+      day7,
+      day14,
+      all: res.data.data.list,
+    };
   }
 }

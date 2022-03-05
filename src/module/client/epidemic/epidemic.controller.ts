@@ -10,7 +10,7 @@ export class EpidemicController {
   @Get('/')
   @ApiOkResponse({ description: '请求成功' })
   @ApiOperation({ summary: '获取疫情数据' })
-  @Header('Cache-Control', 'public, max-age=1800')
+  @Header('Cache-Control', 'private, max-age=1800')
   async index() {
     return await this.epidemicService.getEpidemicData();
   }
@@ -30,5 +30,15 @@ export class EpidemicController {
     @Query('latitude') latitude: number,
   ) {
     return await this.epidemicService.mapService({ longtitude, latitude });
+  }
+
+  @Get('track-list')
+  @ApiOperation({ summary: '疫情行动轨迹' })
+  @ApiOkResponse({ description: '请求成功' })
+  async trackList(
+    @Query('city_code') cityCode: string,
+    @Query('city_name') cityName: string,
+  ) {
+    return await this.epidemicService.getTrackList({ cityCode, cityName });
   }
 }
