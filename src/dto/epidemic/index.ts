@@ -6,3 +6,15 @@ export class OcrDto {
   @ApiProperty({ description: '图片' })
   image: string;
 }
+
+export class TrackDetailDto {
+  @IsNotEmpty()
+  @ApiProperty({ description: '经纬度' })
+  poi: string;
+  @IsNotEmpty()
+  @ApiProperty({ description: '城市代码' })
+  cityCode: number;
+  @IsNotEmpty()
+  @ApiProperty({ description: '城市名称' })
+  cityName: string;
+}

@@ -1,4 +1,4 @@
-import { OcrDto } from '@/dto';
+import { OcrDto, TrackDetailDto } from '@/dto';
 import { EpidemicService } from '@/service/client/epidemic/epidemic.service';
 import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -40,5 +40,12 @@ export class EpidemicController {
     @Query('city_name') cityName: string,
   ) {
     return await this.epidemicService.getTrackList({ cityCode, cityName });
+  }
+
+  @Post('track-detail')
+  @ApiOperation({ summary: '疫情轨迹点详情' })
+  @ApiOkResponse({ description: '请求成功' })
+  async trackDetail(@Body() params: TrackDetailDto) {
+    return await this.epidemicService.getTrackDetail(params);
   }
 }

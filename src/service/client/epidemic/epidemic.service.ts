@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { getBaiduToken } from '@/lib/utils/request';
 import configuration from '@/config/configuration';
 import { ITrackDetail } from './type';
+import { TrackDetailDto } from '@/dto';
 
 @Injectable()
 export class EpidemicService {
@@ -29,12 +30,20 @@ export class EpidemicService {
         }),
         // 31 省市数据
         axios({
-          method: 'post',
+          method: 'POST',
           url: 'https://api.inews.qq.com/newsqa/v1/query/inner/publish/modules/list?modules=statisGradeCityDetail,diseaseh5Shelf',
+        }),
+        axios({
+          url: 'https://api.inews.qq.com/newsqa/v1/query/inner/publish/modules/list?modules=chinaDayList',
+          method: 'GET',
         }),
       ]);
 
-      if (!res?.[0]?.data?.data || !res?.[1]?.data?.data) {
+      if (
+        !res?.[0]?.data?.data ||
+        !res?.[1]?.data?.data ||
+        !res?.[2]?.data?.data
+      ) {
         return null;
       }
 
@@ -76,6 +85,24 @@ export class EpidemicService {
         (a, b) => b.confirmAdd - a.confirmAdd,
       );
 
+      const localConfirmTrend = {
+        xDay: [],
+        yLocalConfirm: [],
+      };
+
+      const chinaDayList = res[2].data.data.chinaDayList;
+
+      for (let idx = 0; idx < chinaDayList.length; idx += 5) {
+        const item = chinaDayList[idx];
+        localConfirmTrend.xDay.push(item.date);
+        localConfirmTrend.yLocalConfirm.push(item.localConfirmH5);
+      }
+
+      localConfirmTrend.xDay.push(chinaDayList[chinaDayList.length - 1].date);
+      localConfirmTrend.yLocalConfirm.push(
+        chinaDayList[chinaDayList.length - 1].localConfirmH5,
+      );
+
       const result = {
         lastUpdateTime: data.lastUpdateTime,
         chinaAdd: data.chinaAdd,
@@ -84,6 +111,7 @@ export class EpidemicService {
         nowConfirmProvinceData,
         totalProvinceData,
         epidemicProvinceList,
+        localConfirmTrend,
       };
 
       if (result) {
@@ -150,40 +178,82 @@ export class EpidemicService {
     cityName: string;
     cityCode: string;
   }) {
+    try {
+      const cacheData = (await this.cacheService.get('trackList')) || {};
+
+      if (cacheData && cacheData[cityCode]) {
+        return cacheData[cityCode];
+      }
+
+      const res = await axios({
+        method: 'get',
+        url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/track_list/',
+        params: {
+          city_code: cityCode,
+          city_name: cityName,
+          activeWidget: 15,
+          show_poi_list: 1,
+        },
+      });
+
+      if (!res?.data?.data?.list) {
+        return null;
+      }
+
+      const day7 = [];
+      const day14 = [];
+
+      const currentTime = Math.floor(+new Date() / 1000);
+      res.data.data.list.forEach((item: ITrackDetail) => {
+        const differDay = Math.floor(
+          (currentTime - item.create_ts) / 24 / 60 / 60,
+        );
+        if (differDay <= 7) {
+          day7.push(item);
+        }
+        if (differDay <= 14) {
+          day14.push(item);
+        }
+      });
+
+      const result = {
+        day7,
+        day14,
+        all: res.data.data.list,
+      };
+
+      if (!cacheData[cityCode]) {
+        cacheData[cityCode] = {};
+      }
+
+      cacheData[cityCode] = result;
+
+      await this.cacheService.set('trackList', cacheData, 60 * 60 * 3);
+
+      return result;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
+  async getTrackDetail({ poi, cityCode, cityName }: TrackDetailDto) {
     const res = await axios({
+      url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/poi/',
       method: 'get',
-      url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/track_list/',
       params: {
         city_code: cityCode,
         city_name: cityName,
+        search_current_poi: poi,
+        poi,
         activeWidget: 15,
         show_poi_list: 1,
       },
     });
 
-    if (!res?.data?.data?.list) {
+    if (!res?.data?.data?.data) {
       return null;
     }
-
-    const day7 = [];
-    const day14 = [];
-
-    const currentTime = Math.floor(+new Date() / 1000);
-    res.data.data.list.forEach((item: ITrackDetail) => {
-      const differDay = Math.floor(
-        (currentTime - item.create_ts) / 24 / 60 / 60,
-      );
-      if (differDay <= 7) {
-        day7.push(item);
-      }
-      if (differDay <= 14) {
-        day14.push(item);
-      }
-    });
-    return {
-      day7,
-      day14,
-      all: res.data.data.list,
-    };
+    return res.data.data.data;
   }
 }
