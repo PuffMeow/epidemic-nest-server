@@ -11,6 +11,10 @@ namespace NodeJS {
     BaiduApiSecret: string;
     qqMapKey: string;
     qqMapSecret: string;
+    aliOssRegion: string;
+    aliOssAccessKeyId: string;
+    aliOssAccessKeySecret: string;
+    aliOssBucket: string;
     [key: string]: any;
   }
 }

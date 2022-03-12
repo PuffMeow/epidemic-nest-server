@@ -140,7 +140,8 @@ export class EpidemicService {
     image = encodeURIComponent(image);
     const res = await axios({
       method: 'POST',
-      url: `https://aip.baidubce.com/rest/2.0/ocr/v1/doc_analysis_office?access_token=${access_token}`,
+      // url: `https://aip.baidubce.com/rest/2.0/ocr/v1/doc_analysis_office?access_token=${access_token}`,
+      url: `https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=${access_token}`,
       data: `image=${image}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -255,5 +256,54 @@ export class EpidemicService {
       return null;
     }
     return res.data.data.data;
+  }
+
+  async codeRecognition(file: any) {
+    console.log(file);
+    let url = `https://wecqupt.oss-cn-chengdu.aliyuncs.com/${file.filename}`;
+    let access_token: string = await this.cacheService.get('access_token');
+    if (!access_token) {
+      access_token = await getBaiduToken();
+
+      await this.cacheService.set(
+        'access_token',
+        access_token,
+        60 * 60 * 24 * 3,
+      );
+    }
+    url = encodeURIComponent(url);
+    const res = await axios({
+      method: 'POST',
+      // url: `https://aip.baidubce.com/rest/2.0/ocr/v1/doc_analysis_office?access_token=${access_token}`,
+      url: `https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=${access_token}`,
+      data: `url=${url}`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    console.log(res.data);
+
+    return res?.data?.results;
+
+    //   console.log(file);
+    //   try {
+    //     const worker = createWorker({
+    //       logger: m => console.log(m),
+    //     });
+
+    //     await worker.load();
+    //     await worker.loadLanguage('chi_sim');
+    //     await worker.initialize('chi_sim');
+    //     const {
+    //       data: { text },
+    //     } = await worker.recognize(
+    //       `https://wecqupt.oss-cn-chengdu.aliyuncs.com/${file.filename}`,
+    //     );
+    //     console.log(text);
+    //     await worker.terminate();
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
   }
 }

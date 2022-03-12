@@ -1,9 +1,7 @@
 import * as dayjs from 'dayjs';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { hashSync } from 'bcryptjs';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from '@/types/role';
 
 export type UserDocument = User & Document;

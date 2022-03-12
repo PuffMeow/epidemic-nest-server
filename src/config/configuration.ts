@@ -12,6 +12,10 @@ const configuration = {
   baiduApiSecret: process.env.BaiduApiSecret,
   qqMapSecret: process.env.qqMapSecret,
   qqMapKey: process.env.qqMapKey,
+  aliOssRegion: process.env.aliOssRegion,
+  aliOssAccessKeyId: process.env.aliOssAccessKeyId,
+  aliOssAccessKeySecret: process.env.aliOssAccessKeySecret,
+  aliOssBucket: process.env.aliOssBucket,
 };
 
 export default configuration;

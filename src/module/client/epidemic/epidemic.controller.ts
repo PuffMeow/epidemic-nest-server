@@ -1,7 +1,19 @@
-import { OcrDto, TrackDetailDto } from '@/dto';
+import { OcrDto, RecognitionDto, TrackDetailDto } from '@/dto';
 import { EpidemicService } from '@/service/client/epidemic/epidemic.service';
-import { Body, Controller, Get, Header, Post, Query } from '@nestjs/common';
+import * as MAO from 'multer-aliyun-oss';
+import {
+  Body,
+  Controller,
+  Get,
+  Header,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import configuration from '@/config/configuration';
 
 @ApiTags('小程序-疫情防控')
 @Controller('wechat/epidemic')
@@ -47,5 +59,24 @@ export class EpidemicController {
   @ApiOkResponse({ description: '请求成功' })
   async trackDetail(@Body() params: TrackDetailDto) {
     return await this.epidemicService.getTrackDetail(params);
+  }
+
+  @Post('scan-code')
+  @ApiOperation({ summary: '健康码识别' })
+  @ApiOkResponse({ description: '请求成功' })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: MAO({
+        config: {
+          region: configuration.aliOssRegion, //地区
+          accessKeyId: configuration.aliOssAccessKeyId,
+          accessKeySecret: configuration.aliOssAccessKeySecret,
+          bucket: configuration.aliOssBucket, //存储空间名称
+        },
+      }),
+    }),
+  )
+  async scanCodeRecognizion(@UploadedFile() file: any) {
+    return await this.epidemicService.codeRecognition(file);
   }
 }

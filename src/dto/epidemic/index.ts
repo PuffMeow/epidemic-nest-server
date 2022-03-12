@@ -18,3 +18,9 @@ export class TrackDetailDto {
   @ApiProperty({ description: '城市名称' })
   cityName: string;
 }
+
+export class RecognitionDto {
+  @IsNotEmpty()
+  @ApiProperty({ description: '图片url' })
+  img: string;
+}
