@@ -1,26 +1,30 @@
+import configuration from '@/config/configuration';
+import { GlobalConfig, GlobalConfigSchema } from '@/db/schema/global-config';
 import { User, UserSchema } from '@/db/schema/user/user.schema';
 import { JwtStrategy } from '@/lib/strategy/jwt.strategy';
 import { LocalStrategy } from '@/lib/strategy/local.strategy';
 import { AuthService } from '@/service/admin/auth/auth.service';
 import { UserService } from '@/service/admin/user/user.service';
-import { Global, Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { UserController } from './user/user.controller';
 
 @Module({
-  providers: [AuthService, UserService, LocalStrategy, JwtStrategy],
+  providers: [UserService, LocalStrategy, JwtStrategy, AuthService],
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: GlobalConfig.name, schema: GlobalConfigSchema },
+    ]),
     PassportModule,
     JwtModule.register({
-      secret: String(process.env.JWT_SECRET), // 必须保证 String 类型
-      signOptions: { expiresIn: '4h' },
+      secret: configuration.jwtSecret,
+      signOptions: { expiresIn: 7200 },
     }),
   ],
   controllers: [UserController],
-  exports: [],
+  exports: [AuthService],
 })
 export class AdminModule {}

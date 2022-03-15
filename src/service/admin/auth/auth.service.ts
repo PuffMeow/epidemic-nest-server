@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 import { Logger } from '@/lib/utils/log4js';
+import configuration from '@/config/configuration';
 
 @Injectable()
 export class AuthService {
@@ -35,5 +36,15 @@ export class AuthService {
         role: user.role,
       }),
     };
+  }
+
+  async verifyToken(token: string) {
+    try {
+      return await this.jwtService.verify(token.split(' ')[1], {
+        secret: configuration.jwtSecret,
+      });
+    } catch (e) {
+      Logger.error(e);
+    }
   }
 }

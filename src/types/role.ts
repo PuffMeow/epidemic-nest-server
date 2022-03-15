@@ -3,8 +3,8 @@ export enum Role {
   SuperAdmin = 0,
   /** 普通管理员 */
   Admin = 1,
-  /** 运营 */
+  /** 产品运营 */
   Operator = 2,
-  /** 普通用户 */
+  /** 普通用户(访客) */
   User = 3,
 }

@@ -4,6 +4,8 @@ import { ApiModule } from './module/client/api.module';
 import { AdminModule } from './module/admin/admin.module';
 import configuration from './config/configuration';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './guards/admin/role.guard';
 
 @Module({
   imports: [
@@ -24,8 +26,13 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
       useFactory: () => ({ uri: configuration.mongoUrl }),
     }),
   ],
-  exports: [],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+  exports: [],
 })
 export class AppModule {}
