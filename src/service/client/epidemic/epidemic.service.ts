@@ -152,24 +152,29 @@ export class EpidemicService {
   }
 
   async mapService(location: { latitude: number; longtitude: number }) {
-    const sig = md5(
-      '/ws/geocoder/v1/?' +
-        sortKeyForUrlQuery(
-          `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}`,
-        ) +
-        configuration.qqMapSecret,
-    );
+    try {
+      const sig = md5(
+        '/ws/geocoder/v1/?' +
+          sortKeyForUrlQuery(
+            `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}`,
+          ) +
+          configuration.qqMapSecret,
+      );
 
-    const res = await axios({
-      method: 'get',
-      url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}&sig=${sig}`,
-    });
+      const res = await axios({
+        method: 'get',
+        url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}&sig=${sig}`,
+      });
 
-    if (!res?.data) {
+      if (!res?.data) {
+        return null;
+      }
+
+      return res.data;
+    } catch (e) {
+      Logger.error(e);
       return null;
     }
-
-    return res.data;
   }
 
   async getTrackList({
@@ -233,33 +238,37 @@ export class EpidemicService {
 
       return result;
     } catch (e) {
-      console.log(e);
+      Logger.error(e);
       return null;
     }
   }
 
   async getTrackDetail({ poi, cityCode, cityName }: TrackDetailDto) {
-    const res = await axios({
-      url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/poi/',
-      method: 'get',
-      params: {
-        city_code: cityCode,
-        city_name: cityName,
-        search_current_poi: poi,
-        poi,
-        activeWidget: 15,
-        show_poi_list: 1,
-      },
-    });
+    try {
+      const res = await axios({
+        url: 'https://i.snssdk.com/toutiao/normandy/pneumonia_trending/poi/',
+        method: 'get',
+        params: {
+          city_code: cityCode,
+          city_name: cityName,
+          search_current_poi: poi,
+          poi,
+          activeWidget: 15,
+          show_poi_list: 1,
+        },
+      });
 
-    if (!res?.data?.data?.data) {
+      if (!res?.data?.data?.data) {
+        return null;
+      }
+      return res.data.data.data;
+    } catch (e) {
+      Logger.error(e);
       return null;
     }
-    return res.data.data.data;
   }
 
   async codeRecognition(file: any) {
-    console.log(file);
     let url = `https://wecqupt.oss-cn-chengdu.aliyuncs.com/${file.filename}`;
     let access_token: string = await this.cacheService.get('access_token');
     if (!access_token) {
@@ -281,8 +290,6 @@ export class EpidemicService {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
-
-    console.log(res.data);
 
     return res?.data?.results;
 

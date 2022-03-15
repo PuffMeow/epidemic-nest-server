@@ -1,4 +1,4 @@
-import { CreateUserDto } from '@/dto/user';
+import { RemoveUserto, CreateOrUpdateUserDto } from '@/dto/user';
 import { LocalAuthGuard, JwtGuard } from '@/guards';
 import { Roles } from '@/lib/decorator/role.decorator';
 import { AuthService } from '@/service/admin/auth/auth.service';
@@ -30,9 +30,27 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Post('/createUser')
-  @ApiOperation({ summary: '管理员创建' })
-  async create(@Body() user: CreateUserDto) {
-    return this.userService.createUser(user);
+  @Roles(Role.SuperAdmin)
+  @Post('/createOrUpdateUser')
+  @ApiOperation({ summary: '用户创建或修改，有_id传入的时候是修改' })
+  async createOrUpdateUser(@Body() user: CreateOrUpdateUserDto) {
+    return this.userService.createOrUpdateUser(user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Roles(Role.SuperAdmin)
+  @ApiBearerAuth()
+  @Get('/allUsers')
+  @ApiOperation({ summary: '查找所有用户' })
+  async findAll() {
+    return this.userService.findAllUsers();
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Post('/removeUser')
+  @ApiOperation({ summary: '删除用户' })
+  async removeUser(@Body() user: RemoveUserto) {
+    return this.userService.removeUser(user);
   }
 }

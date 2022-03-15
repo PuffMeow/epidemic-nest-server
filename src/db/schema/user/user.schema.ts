@@ -15,6 +15,7 @@ export class User {
     set: hashSync,
     required: true,
     select: false,
+    minlength: 6,
   })
   password: string;
 
