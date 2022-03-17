@@ -14,11 +14,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import configuration from '@/config/configuration';
+import { GlobalConfigService } from '@/service/admin/global-config/global-config.service';
 
 @ApiTags('小程序-疫情防控')
 @Controller('wechat/epidemic')
 export class EpidemicController {
-  constructor(private readonly epidemicService: EpidemicService) {}
+  constructor(
+    private readonly epidemicService: EpidemicService,
+    private readonly globalConfigService: GlobalConfigService,
+  ) {}
   @Get('/')
   @ApiOkResponse({ description: '请求成功' })
   @ApiOperation({ summary: '获取疫情数据' })
@@ -37,6 +41,7 @@ export class EpidemicController {
   @Get('map')
   @ApiOperation({ summary: '地图服务' })
   @ApiOkResponse({ description: '请求成功' })
+  @Header('Cache-Control', 'private, max-age=1800')
   async map(
     @Query('longtitude') longtitude: number,
     @Query('latitude') latitude: number,
@@ -47,6 +52,7 @@ export class EpidemicController {
   @Get('track-list')
   @ApiOperation({ summary: '疫情行动轨迹' })
   @ApiOkResponse({ description: '请求成功' })
+  @Header('Cache-Control', 'private, max-age=1800')
   async trackList(
     @Query('city_code') cityCode: string,
     @Query('city_name') cityName: string,
@@ -57,8 +63,17 @@ export class EpidemicController {
   @Post('track-detail')
   @ApiOperation({ summary: '疫情轨迹点详情' })
   @ApiOkResponse({ description: '请求成功' })
+  @Header('Cache-Control', 'private, max-age=1800')
   async trackDetail(@Body() params: TrackDetailDto) {
     return await this.epidemicService.getTrackDetail(params);
+  }
+
+  @Get('getGlobalConfig')
+  @ApiOperation({ summary: '获取全局配置详情' })
+  @ApiOkResponse({ description: '请求成功' })
+  @Header('Cache-Control', 'private, max-age=1800')
+  async getGlobalConfig() {
+    return await this.globalConfigService.getGlobalConfig();
   }
 
   @Post('scan-code')

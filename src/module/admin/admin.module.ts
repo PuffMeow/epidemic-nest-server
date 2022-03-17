@@ -10,9 +10,17 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { UserController } from './user/user.controller';
+import { GlobalConfigController } from './global-config/global-config.controller';
+import { GlobalConfigService } from '@/service/admin/global-config/global-config.service';
 
 @Module({
-  providers: [UserService, LocalStrategy, JwtStrategy, AuthService],
+  providers: [
+    UserService,
+    LocalStrategy,
+    JwtStrategy,
+    AuthService,
+    GlobalConfigService,
+  ],
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
@@ -24,7 +32,7 @@ import { UserController } from './user/user.controller';
       signOptions: { expiresIn: 7200 },
     }),
   ],
-  controllers: [UserController],
-  exports: [AuthService],
+  controllers: [UserController, GlobalConfigController],
+  exports: [AuthService, GlobalConfigService],
 })
 export class AdminModule {}

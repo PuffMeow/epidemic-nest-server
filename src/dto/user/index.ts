@@ -7,10 +7,8 @@ export class CreateOrUpdateUserDto {
   @ApiProperty({ description: '用户名' })
   readonly username: string;
 
-  @IsNotEmpty()
   @ApiProperty({ description: '密码', minLength: 6 })
-  @MinLength(6)
-  readonly password: string;
+  readonly password?: string;
 
   @ApiProperty({ description: '新密码', minLength: 6 })
   readonly newPassword?: string;
