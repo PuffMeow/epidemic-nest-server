@@ -43,7 +43,7 @@ $ npm run test:cov
 
 # Windows 本机启动 mongodb 数据库
 
-## 开发模式
+## Windows 系统下的开发配置
 
 启动 redis, cd 到 redis 所在目录运行
 

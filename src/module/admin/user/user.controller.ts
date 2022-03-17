@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 @ApiTags('后台接口')
-@Controller('admin')
+@Controller('admin/user')
 export class UserController {
   constructor(
     private readonly authService: AuthService,
@@ -40,7 +40,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Roles(Role.SuperAdmin)
   @ApiBearerAuth()
-  @Get('/allUsers')
+  @Get('/getAll')
   @ApiOperation({ summary: '查找所有用户' })
   async findAll() {
     return this.userService.findAllUsers();
@@ -48,7 +48,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Post('/removeUser')
+  @Post('/removeOne')
   @ApiOperation({ summary: '删除用户' })
   async removeUser(@Body() user: RemoveUserto) {
     return this.userService.removeUser(user);

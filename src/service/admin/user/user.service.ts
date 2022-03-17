@@ -26,20 +26,26 @@ export class UserService {
         return '创建用户成功';
       } else {
         const { username, role, password, newPassword } = user;
-        const validated = await this.authService.validateUser(
-          username,
-          password,
-        );
+        if (password && newPassword) {
+          const validated = await this.authService.validateUser(
+            username,
+            password,
+          );
 
-        if (!validated) {
-          return '原账号或密码错误';
+          if (!validated) {
+            return '原账号或密码错误';
+          }
+
+          await this.userModel.findByIdAndUpdate(user._id, {
+            username,
+            role,
+            password: newPassword,
+          });
+        } else {
+          await this.userModel.findByIdAndUpdate(user._id, {
+            role,
+          });
         }
-
-        await this.userModel.findByIdAndUpdate(user._id, {
-          username,
-          role,
-          password: newPassword,
-        });
 
         return '修改成功';
       }
