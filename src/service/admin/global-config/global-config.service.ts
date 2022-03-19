@@ -23,6 +23,7 @@ export class GlobalConfigService {
             isShowConfirmTrend,
             isShowNotify,
             isShowTrack,
+            isShowOverseas,
           } = res[0];
 
           return {
@@ -31,6 +32,7 @@ export class GlobalConfigService {
             isShowNotify,
             isShowChinaMap,
             isShowConfirmTrend,
+            isShowOverseas,
           };
         } else {
           return res[0];

@@ -8,15 +8,23 @@ export class GlobalConfignDto {
   @IsNotEmpty()
   @ApiProperty({ description: '是否显示顶部滑动条' })
   isShowNotify: boolean;
+
   @ApiProperty({ description: '滑动条内容' })
   notify?: string;
+
   @IsNotEmpty()
   @ApiProperty({ description: '是否显示疫情轨迹组件' })
   isShowTrack: boolean;
+
   @IsNotEmpty()
   @ApiProperty({ description: '是否显示中国地图组件' })
   isShowChinaMap: boolean;
+
   @IsNotEmpty()
   @ApiProperty({ description: '是否显示确诊趋势组件' })
   isShowConfirmTrend: boolean;
+
+  @IsNotEmpty()
+  @ApiProperty({ description: '是否显示海外疫情页面' })
+  isShowOverseas: boolean;
 }

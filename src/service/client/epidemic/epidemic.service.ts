@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { getBaiduToken } from '@/lib/utils/request';
 import configuration from '@/config/configuration';
 import { ITrackDetail } from './type';
-import { TrackDetailDto } from '@/dto';
+import { TrackDetailDto, ViewCounterDTO } from '@/dto';
 
 @Injectable()
 export class EpidemicService {
@@ -288,6 +288,23 @@ export class EpidemicService {
       await this.cacheService.set('worldData', res.data.data, 60 * 60 * 3);
 
       return res.data.data;
+    } catch (e) {
+      Logger.error(e);
+      return null;
+    }
+  }
+
+  async viewCounter({ type }: ViewCounterDTO) {
+    try {
+      const isFieldExist = await this.cacheService.isHashExist(
+        'viewCounter',
+        type,
+      );
+      if (!isFieldExist) {
+        await this.cacheService.setHash('viewCounter', type, 1);
+      } else {
+        await this.cacheService.incHash('viewCounter', type, 1);
+      }
     } catch (e) {
       Logger.error(e);
       return null;

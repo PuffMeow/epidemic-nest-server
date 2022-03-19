@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class OcrDto {
@@ -23,4 +23,10 @@ export class RecognitionDto {
   @IsNotEmpty()
   @ApiProperty({ description: '图片url' })
   img: string;
+}
+
+export class ViewCounterDTO {
+  @ApiProperty({ description: '疫情数据页访问量' })
+  @ApiPropertyOptional({ enum: ['epidemic', 'track', 'overseas'] })
+  type: string;
 }

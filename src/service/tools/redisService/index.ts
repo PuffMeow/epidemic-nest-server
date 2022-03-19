@@ -30,6 +30,26 @@ export class CacheService {
     }
   }
 
+  async isHashExist(key: string, field: string) {
+    return this.client.hexists(key, field);
+  }
+
+  async setHash(key: string, field: string, val: any) {
+    await this.client.hset(key, field, val);
+  }
+
+  async getHash(key: string, field: string) {
+    return await this.client.hget(key, field);
+  }
+
+  async incHash(key: string, field: string, increment: number) {
+    await this.client.hincrby(key, field, increment);
+  }
+
+  async rmHash(key: string, field: string) {
+    await this.client.hdel(key, field);
+  }
+
   /**
    * 根据key删除redis缓存数据
    */

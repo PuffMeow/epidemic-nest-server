@@ -1,4 +1,4 @@
-import { OcrDto, RecognitionDto, TrackDetailDto } from '@/dto';
+import { OcrDto, TrackDetailDto, ViewCounterDTO } from '@/dto';
 import { EpidemicService } from '@/service/client/epidemic/epidemic.service';
 import * as MAO from 'multer-aliyun-oss';
 import {
@@ -82,6 +82,13 @@ export class EpidemicController {
   @Header('Cache-Control', 'private, max-age=1800')
   async getGlobalConfig() {
     return await this.globalConfigService.getGlobalConfig();
+  }
+
+  @Post('viewCounter')
+  @ApiOperation({ summary: '用户访问统计' })
+  @ApiOkResponse({ description: '请求成功' })
+  async viewCounter(@Body() params: ViewCounterDTO) {
+    return await this.epidemicService.viewCounter(params);
   }
 
   @Post('scan-code')
