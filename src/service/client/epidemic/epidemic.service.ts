@@ -268,6 +268,32 @@ export class EpidemicService {
     }
   }
 
+  async getWorldData() {
+    try {
+      const cacheData = await this.cacheService.get('worldData');
+
+      if (cacheData) {
+        return cacheData;
+      }
+
+      const res = await axios({
+        method: 'post',
+        url: 'https://api.inews.qq.com/newsqa/v1/automation/modules/list?modules=WomWorld,WomAboard',
+      });
+
+      if (!res?.data?.data) {
+        return null;
+      }
+
+      await this.cacheService.set('worldData', res.data.data, 60 * 60 * 3);
+
+      return res.data.data;
+    } catch (e) {
+      Logger.error(e);
+      return null;
+    }
+  }
+
   async codeRecognition(file: any) {
     let url = `https://wecqupt.oss-cn-chengdu.aliyuncs.com/${file.filename}`;
     let access_token: string = await this.cacheService.get('access_token');

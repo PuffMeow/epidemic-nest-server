@@ -49,7 +49,7 @@ export class EpidemicController {
     return await this.epidemicService.mapService({ longtitude, latitude });
   }
 
-  @Get('track-list')
+  @Get('trackList')
   @ApiOperation({ summary: '疫情行动轨迹' })
   @ApiOkResponse({ description: '请求成功' })
   @Header('Cache-Control', 'private, max-age=1800')
@@ -60,12 +60,20 @@ export class EpidemicController {
     return await this.epidemicService.getTrackList({ cityCode, cityName });
   }
 
-  @Post('track-detail')
+  @Post('trackDetail')
   @ApiOperation({ summary: '疫情轨迹点详情' })
   @ApiOkResponse({ description: '请求成功' })
   @Header('Cache-Control', 'private, max-age=1800')
   async trackDetail(@Body() params: TrackDetailDto) {
     return await this.epidemicService.getTrackDetail(params);
+  }
+
+  @Get('getWorldData')
+  @ApiOperation({ summary: '获取世界疫情数据详情' })
+  @ApiOkResponse({ description: '请求成功' })
+  @Header('Cache-Control', 'private, max-age=1800')
+  async getWorldData() {
+    return await this.epidemicService.getWorldData();
   }
 
   @Get('getGlobalConfig')
