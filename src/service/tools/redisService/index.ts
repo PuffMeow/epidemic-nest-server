@@ -46,8 +46,12 @@ export class CacheService {
     await this.client.hincrby(key, field, increment);
   }
 
-  async rmHash(key: string, field: string) {
-    await this.client.hdel(key, field);
+  async rmHash(key: string) {
+    await this.client.del(key);
+  }
+
+  async getAllHash(key: string) {
+    return await this.client.hgetall(key);
   }
 
   /**

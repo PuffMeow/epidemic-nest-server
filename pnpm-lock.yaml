@@ -11,6 +11,7 @@ specifiers:
   '@nestjs/mongoose': ^9.0.1
   '@nestjs/passport': ^8.0.1
   '@nestjs/platform-express': ^8.0.0
+  '@nestjs/schedule': ^1.0.2
   '@nestjs/schematics': ^8.0.0
   '@nestjs/swagger': ^5.1.5
   '@nestjs/testing': ^8.0.0
@@ -74,6 +75,7 @@ dependencies:
   '@nestjs/mongoose': 9.0.2_33895057e416ca1210f93b5f710ccb9c
   '@nestjs/passport': 8.2.1_7279ab1fdcd161f1ce2d9179e8fa21f7
   '@nestjs/platform-express': 8.4.0_31e7036b193d6d3c9cadab18cbb4af84
+  '@nestjs/schedule': 1.0.2_1ce925e2290a1cea9e3700e8a60baeb5
   '@nestjs/swagger': 5.2.0_2480abcf69818b8f788db632e712a7d6
   aliyun-api-gateway: 1.1.6
   axios: 0.24.0
@@ -1150,6 +1152,20 @@ packages:
       express: 4.17.3
       multer: 1.4.4
       tslib: 2.3.1
+    dev: false
+
+  /@nestjs/schedule/1.0.2_1ce925e2290a1cea9e3700e8a60baeb5:
+    resolution: {integrity: sha512-GGRehpSm0nCthYNxAGdTzondPrRvurtKnkQCzIb3Tccqq6PhfS2QiHMwDaCel5/4jhYbR/lZR9UsVr6KSJc2Xg==}
+    peerDependencies:
+      '@nestjs/common': ^6.10.11 || ^7.0.0 || ^8.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 8.4.0_5199533202e21c7185c9d97f881e2827
+      '@nestjs/core': 8.4.0_ded80713f50ec1c99e9ba95af1765d72
+      cron: 1.7.2
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
     dev: false
 
   /@nestjs/schematics/8.0.8_chokidar@3.5.3+typescript@4.6.2:
@@ -2709,6 +2725,12 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron/1.7.2:
+    resolution: {integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==}
+    dependencies:
+      moment-timezone: 0.5.34
+    dev: false
 
   /cross-env/7.0.3:
     resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
@@ -5501,6 +5523,16 @@ packages:
       supports-color: 4.4.0
     dev: false
     optional: true
+
+  /moment-timezone/0.5.34:
+    resolution: {integrity: sha512-3zAEHh2hKUs3EXLESx/wsgw6IQdusOT8Bxm3D9UrHPQR7zlMmzwybC8zHEM1tQ4LJwP7fcxrWr8tuBg05fFCbg==}
+    dependencies:
+      moment: 2.29.1
+    dev: false
+
+  /moment/2.29.1:
+    resolution: {integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==}
+    dev: false
 
   /mongodb-connection-string-url/2.5.2:
     resolution: {integrity: sha512-tWDyIG8cQlI5k3skB6ywaEA5F9f5OntrKKsT/Lteub2zgwSUlhqEN2inGgBTm8bpYJf8QYBdA/5naz65XDpczA==}

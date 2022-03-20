@@ -8,7 +8,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
-@ApiTags('后台接口')
+@ApiTags('后台用户配置')
 @Controller('admin/user')
 export class UserController {
   constructor(

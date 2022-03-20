@@ -12,6 +12,10 @@ import { PassportModule } from '@nestjs/passport';
 import { UserController } from './user/user.controller';
 import { GlobalConfigController } from './global-config/global-config.controller';
 import { GlobalConfigService } from '@/service/admin/global-config/global-config.service';
+import { ViewCounter, ViewCounterSchema } from '@/db/schema/view-counter';
+import CacheService from '@/service/tools/redisService';
+import { ViewCounterService } from '@/service/admin/view-counter/view-counter.service';
+import { ViewCounterController } from './view-counter/view-counter.controller';
 
 @Module({
   providers: [
@@ -20,11 +24,14 @@ import { GlobalConfigService } from '@/service/admin/global-config/global-config
     JwtStrategy,
     AuthService,
     GlobalConfigService,
+    ViewCounterService,
+    CacheService,
   ],
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: GlobalConfig.name, schema: GlobalConfigSchema },
+      { name: ViewCounter.name, schema: ViewCounterSchema },
     ]),
     PassportModule,
     JwtModule.register({
@@ -32,7 +39,7 @@ import { GlobalConfigService } from '@/service/admin/global-config/global-config
       signOptions: { expiresIn: 7200 },
     }),
   ],
-  controllers: [UserController, GlobalConfigController],
+  controllers: [UserController, GlobalConfigController, ViewCounterController],
   exports: [AuthService, GlobalConfigService],
 })
 export class AdminModule {}

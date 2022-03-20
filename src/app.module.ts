@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/admin/role.guard';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RolesGuard } from './guards/admin/role.guard';
     MongooseModule.forRootAsync({
       useFactory: () => ({ uri: configuration.mongoUrl }),
     }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [

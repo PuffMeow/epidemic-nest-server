@@ -9,12 +9,12 @@ import { Model } from 'mongoose';
 export class GlobalConfigService {
   constructor(
     @InjectModel(GlobalConfig.name)
-    private readonly globalConfigModal: Model<GlobalConfigDocument>,
+    private readonly globalConfigModel: Model<GlobalConfigDocument>,
   ) {}
 
   async getGlobalConfig() {
     try {
-      const res = await this.globalConfigModal.find();
+      const res = await this.globalConfigModel.find();
       if (res?.[0]) {
         if (!res?.[0]?.isShowNotify) {
           const {
@@ -49,12 +49,12 @@ export class GlobalConfigService {
     try {
       const { _id, ...restParams } = params;
       if (!_id) {
-        const doc = await this.globalConfigModal.create(restParams);
+        const doc = await this.globalConfigModel.create(restParams);
         doc.save();
 
         return '创建成功';
       } else {
-        await this.globalConfigModal.findByIdAndUpdate(_id, restParams);
+        await this.globalConfigModel.findByIdAndUpdate(_id, restParams);
 
         return '修改成功';
       }

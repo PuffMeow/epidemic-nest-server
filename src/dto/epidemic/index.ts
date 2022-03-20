@@ -28,5 +28,8 @@ export class RecognitionDto {
 export class ViewCounterDTO {
   @ApiProperty({ description: '疫情数据页访问量' })
   @ApiPropertyOptional({ enum: ['epidemic', 'track', 'overseas'] })
-  type: string;
+  type?: string;
+
+  @ApiProperty({ description: '查询数量' })
+  limit?: number;
 }
