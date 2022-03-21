@@ -16,6 +16,9 @@ import { ViewCounter, ViewCounterSchema } from '@/db/schema/view-counter';
 import CacheService from '@/service/tools/redisService';
 import { ViewCounterService } from '@/service/admin/view-counter/view-counter.service';
 import { ViewCounterController } from './view-counter/view-counter.controller';
+import { OcrManagerController } from './ocr-manager/ocr-manager.controller';
+import { OcrManagerService } from '@/service/admin/ocr-manager/ocr-manager.service';
+import { OCR, OCRSchema } from '@/db/schema/ocr-data';
 
 @Module({
   providers: [
@@ -26,12 +29,14 @@ import { ViewCounterController } from './view-counter/view-counter.controller';
     GlobalConfigService,
     ViewCounterService,
     CacheService,
+    OcrManagerService,
   ],
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: GlobalConfig.name, schema: GlobalConfigSchema },
       { name: ViewCounter.name, schema: ViewCounterSchema },
+      { name: OCR.name, schema: OCRSchema },
     ]),
     PassportModule,
     JwtModule.register({
@@ -39,7 +44,12 @@ import { ViewCounterController } from './view-counter/view-counter.controller';
       signOptions: { expiresIn: 7200 },
     }),
   ],
-  controllers: [UserController, GlobalConfigController, ViewCounterController],
+  controllers: [
+    UserController,
+    GlobalConfigController,
+    ViewCounterController,
+    OcrManagerController,
+  ],
   exports: [AuthService, GlobalConfigService],
 })
 export class AdminModule {}

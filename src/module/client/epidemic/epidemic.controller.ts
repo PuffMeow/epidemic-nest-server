@@ -91,22 +91,22 @@ export class EpidemicController {
     return await this.epidemicService.viewCounter(params);
   }
 
-  @Post('scan-code')
-  @ApiOperation({ summary: '健康码识别' })
-  @ApiOkResponse({ description: '请求成功' })
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: MAO({
-        config: {
-          region: configuration.aliOssRegion, //地区
-          accessKeyId: configuration.aliOssAccessKeyId,
-          accessKeySecret: configuration.aliOssAccessKeySecret,
-          bucket: configuration.aliOssBucket, //存储空间名称
-        },
-      }),
-    }),
-  )
-  async scanCodeRecognizion(@UploadedFile() file: any) {
-    return await this.epidemicService.codeRecognition(file);
-  }
+  // @Post('scan-code')
+  // @ApiOperation({ summary: '健康码识别' })
+  // @ApiOkResponse({ description: '请求成功' })
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: MAO({
+  //       config: {
+  //         region: configuration.aliOssRegion, //地区
+  //         accessKeyId: configuration.aliOssAccessKeyId,
+  //         accessKeySecret: configuration.aliOssAccessKeySecret,
+  //         bucket: configuration.aliOssBucket, //存储空间名称
+  //       },
+  //     }),
+  //   }),
+  // )
+  // async scanCodeRecognizion(@UploadedFile() file: any) {
+  //   return await this.epidemicService.codeRecognition(file);
+  // }
 }

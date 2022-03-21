@@ -26,7 +26,7 @@ export class CreateOrUpdateUserDto {
   readonly phone?: string;
 }
 
-export class RemoveUserto {
+export class RemoveUserDto {
   @IsNotEmpty()
   @ApiProperty({ description: '用户名' })
   readonly username: string;

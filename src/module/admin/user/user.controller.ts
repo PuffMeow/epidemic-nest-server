@@ -1,4 +1,4 @@
-import { RemoveUserto, CreateOrUpdateUserDto } from '@/dto/user';
+import { RemoveUserDto, CreateOrUpdateUserDto } from '@/dto/user';
 import { LocalAuthGuard, JwtGuard } from '@/guards';
 import { Roles } from '@/lib/decorator/role.decorator';
 import { AuthService } from '@/service/admin/auth/auth.service';
@@ -50,7 +50,7 @@ export class UserController {
   @ApiBearerAuth()
   @Post('/removeOne')
   @ApiOperation({ summary: '删除用户' })
-  async removeUser(@Body() user: RemoveUserto) {
+  async removeUser(@Body() user: RemoveUserDto) {
     return this.userService.removeUser(user);
   }
 }

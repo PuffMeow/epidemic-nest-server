@@ -1,5 +1,5 @@
 import { User, UserDocument } from '@/db/schema/user/user.schema';
-import { CreateOrUpdateUserDto, RemoveUserto } from '@/dto';
+import { CreateOrUpdateUserDto, RemoveUserDto } from '@/dto';
 import { Logger } from '@/lib/utils/log4js';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -74,7 +74,7 @@ export class UserService {
     }
   }
 
-  async removeUser(user: RemoveUserto): Promise<void> {
+  async removeUser(user: RemoveUserDto): Promise<void> {
     try {
       return await this.userModel.findOneAndDelete(
         { username: user.username },

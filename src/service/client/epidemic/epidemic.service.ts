@@ -8,10 +8,16 @@ import { getBaiduToken } from '@/lib/utils/request';
 import configuration from '@/config/configuration';
 import { ITrackDetail } from './type';
 import { TrackDetailDto, ViewCounterDTO } from '@/dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { OCR, OCRDocument } from '@/db/schema/ocr-data';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class EpidemicService {
-  constructor(private readonly cacheService: CacheService) {}
+  constructor(
+    private readonly cacheService: CacheService,
+    @InjectModel(OCR.name) private readonly ocrModel: Model<OCRDocument>,
+  ) {}
 
   /** 获取和处理疫情数据 */
   async getEpidemicData() {
@@ -122,33 +128,45 @@ export class EpidemicService {
       }
     } catch (e) {
       Logger.error(e);
+      return null;
     }
   }
 
   /** 图片文字识别 */
   async OCRService(image: string) {
-    let access_token: string = await this.cacheService.get('access_token');
-    if (!access_token) {
-      access_token = await getBaiduToken();
+    try {
+      let access_token: string = await this.cacheService.get('access_token');
+      if (!access_token) {
+        access_token = await getBaiduToken();
 
-      await this.cacheService.set(
-        'access_token',
-        access_token,
-        60 * 60 * 24 * 3,
-      );
+        await this.cacheService.set(
+          'access_token',
+          access_token,
+          60 * 60 * 24 * 3,
+        );
+      }
+      image = encodeURIComponent(image);
+      const res = await axios({
+        method: 'POST',
+        url: `https://aip.baidubce.com/rest/2.0/ocr/v1/doc_analysis_office?access_token=${access_token}`,
+        data: `image=${image}`,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (res?.data?.results) {
+        await this.ocrModel.create({
+          data: JSON.stringify(res.data.results),
+        });
+        return '保存数据成功';
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Logger.error(e);
+      return null;
     }
-    image = encodeURIComponent(image);
-    const res = await axios({
-      method: 'POST',
-      // url: `https://aip.baidubce.com/rest/2.0/ocr/v1/doc_analysis_office?access_token=${access_token}`,
-      url: `https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=${access_token}`,
-      data: `image=${image}`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    return res?.data?.results;
   }
 
   async mapService(location: { latitude: number; longtitude: number }) {
@@ -335,25 +353,5 @@ export class EpidemicService {
     });
 
     return res?.data?.results;
-
-    //   console.log(file);
-    //   try {
-    //     const worker = createWorker({
-    //       logger: m => console.log(m),
-    //     });
-
-    //     await worker.load();
-    //     await worker.loadLanguage('chi_sim');
-    //     await worker.initialize('chi_sim');
-    //     const {
-    //       data: { text },
-    //     } = await worker.recognize(
-    //       `https://wecqupt.oss-cn-chengdu.aliyuncs.com/${file.filename}`,
-    //     );
-    //     console.log(text);
-    //     await worker.terminate();
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
   }
 }
