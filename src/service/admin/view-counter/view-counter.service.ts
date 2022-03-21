@@ -25,7 +25,7 @@ export class ViewCounterService {
     }
   }
 
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_HOUR)
   async writeViewCounterToDB() {
     try {
       const viewCountRecord = await this.cacheService.getAllHash('viewCounter');
