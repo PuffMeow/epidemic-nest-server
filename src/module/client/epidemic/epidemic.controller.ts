@@ -41,7 +41,6 @@ export class EpidemicController {
   @Get('map')
   @ApiOperation({ summary: '地图服务' })
   @ApiOkResponse({ description: '请求成功' })
-  @Header('Cache-Control', 'private, max-age=1800')
   async map(
     @Query('longtitude') longtitude: number,
     @Query('latitude') latitude: number,
@@ -52,7 +51,6 @@ export class EpidemicController {
   @Get('trackList')
   @ApiOperation({ summary: '疫情行动轨迹' })
   @ApiOkResponse({ description: '请求成功' })
-  @Header('Cache-Control', 'private, max-age=1800')
   async trackList(
     @Query('city_code') cityCode: string,
     @Query('city_name') cityName: string,
@@ -63,7 +61,6 @@ export class EpidemicController {
   @Post('trackDetail')
   @ApiOperation({ summary: '疫情轨迹点详情' })
   @ApiOkResponse({ description: '请求成功' })
-  @Header('Cache-Control', 'private, max-age=1800')
   async trackDetail(@Body() params: TrackDetailDto) {
     return await this.epidemicService.getTrackDetail(params);
   }
@@ -79,7 +76,6 @@ export class EpidemicController {
   @Get('getGlobalConfig')
   @ApiOperation({ summary: '获取全局配置详情' })
   @ApiOkResponse({ description: '请求成功' })
-  @Header('Cache-Control', 'private, max-age=1800')
   async getGlobalConfig() {
     return await this.globalConfigService.getGlobalConfig();
   }

@@ -121,7 +121,7 @@ export class EpidemicService {
       };
 
       if (result) {
-        await this.cacheService.set('epidemicData', result, 60 * 60 * 2);
+        this.cacheService.set('epidemicData', result, 60 * 60 * 2);
         return result;
       } else {
         return null;
@@ -139,11 +139,7 @@ export class EpidemicService {
       if (!access_token) {
         access_token = await getBaiduToken();
 
-        await this.cacheService.set(
-          'access_token',
-          access_token,
-          60 * 60 * 24 * 3,
-        );
+        this.cacheService.set('access_token', access_token, 60 * 60 * 24 * 3);
       }
       image = encodeURIComponent(image);
       const res = await axios({
@@ -171,6 +167,14 @@ export class EpidemicService {
 
   async mapService(location: { latitude: number; longtitude: number }) {
     try {
+      const cacheData = (await this.cacheService.get('mapLocation')) || {};
+      const cacheKey = `${Math.floor(location.longtitude)},${Math.floor(
+        location.latitude,
+      )}`;
+      if (cacheData?.[cacheKey]) {
+        return cacheData[cacheKey];
+      }
+
       const sig = md5(
         '/ws/geocoder/v1/?' +
           sortKeyForUrlQuery(
@@ -184,11 +188,14 @@ export class EpidemicService {
         url: `https://apis.map.qq.com/ws/geocoder/v1/?location=${location.latitude},${location.longtitude}&key=${configuration.qqMapKey}&sig=${sig}`,
       });
 
-      if (!res?.data) {
+      if (!res?.data?.result) {
         return null;
       }
 
-      return res.data;
+      cacheData[cacheKey] = res.data.result;
+      this.cacheService.set('mapLocation', cacheData, 60 * 60);
+
+      return res.data.result;
     } catch (e) {
       Logger.error(e);
       return null;
@@ -252,7 +259,7 @@ export class EpidemicService {
 
       cacheData[cityCode] = result;
 
-      await this.cacheService.set('trackList', cacheData, 60 * 60 * 3);
+      this.cacheService.set('trackList', cacheData, 60 * 60 * 3);
 
       return result;
     } catch (e) {
@@ -303,7 +310,7 @@ export class EpidemicService {
         return null;
       }
 
-      await this.cacheService.set('worldData', res.data.data, 60 * 60 * 3);
+      this.cacheService.set('worldData', res.data.data, 60 * 60 * 3);
 
       return res.data.data;
     } catch (e) {
@@ -319,9 +326,9 @@ export class EpidemicService {
         type,
       );
       if (!isFieldExist) {
-        await this.cacheService.setHash('viewCounter', type, 1);
+        this.cacheService.setHash('viewCounter', type, 1);
       } else {
-        await this.cacheService.incHash('viewCounter', type, 1);
+        this.cacheService.incHash('viewCounter', type, 1);
       }
     } catch (e) {
       Logger.error(e);
@@ -335,11 +342,7 @@ export class EpidemicService {
     if (!access_token) {
       access_token = await getBaiduToken();
 
-      await this.cacheService.set(
-        'access_token',
-        access_token,
-        60 * 60 * 24 * 3,
-      );
+      this.cacheService.set('access_token', access_token, 60 * 60 * 24 * 3);
     }
     url = encodeURIComponent(url);
     const res = await axios({

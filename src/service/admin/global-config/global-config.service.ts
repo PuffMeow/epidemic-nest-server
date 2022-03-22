@@ -1,6 +1,7 @@
 import { GlobalConfig, GlobalConfigDocument } from '@/db/schema/global-config';
 import { GlobalConfignDto } from '@/dto';
 import { Logger } from '@/lib/utils/log4js';
+import CacheService from '@/service/tools/redisService';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -10,13 +11,20 @@ export class GlobalConfigService {
   constructor(
     @InjectModel(GlobalConfig.name)
     private readonly globalConfigModel: Model<GlobalConfigDocument>,
+    private readonly cacheService: CacheService,
   ) {}
 
   async getGlobalConfig() {
     try {
+      const cacheGlobalConfig = await this.cacheService.get('globalConfig');
+      if (cacheGlobalConfig) {
+        return cacheGlobalConfig;
+      }
+
       const res = await this.globalConfigModel.find();
       if (res?.[0]) {
         if (!res?.[0]?.isShowNotify) {
+          // 不返回 content 内容
           const {
             _id,
             isShowChinaMap,
@@ -26,7 +34,7 @@ export class GlobalConfigService {
             isShowOverseas,
           } = res[0];
 
-          return {
+          const data = {
             _id,
             isShowTrack,
             isShowNotify,
@@ -34,7 +42,13 @@ export class GlobalConfigService {
             isShowConfirmTrend,
             isShowOverseas,
           };
+
+          this.cacheService.set('globalConfig', data);
+
+          return data;
         } else {
+          // 返回 content 内容
+          this.cacheService.set('globalConfig', res[0]);
           return res[0];
         }
       } else {
@@ -48,9 +62,9 @@ export class GlobalConfigService {
   async saveGlobalConfig(params: GlobalConfignDto) {
     try {
       const { _id, ...restParams } = params;
+      this.cacheService.del('globalConfig');
       if (!_id) {
-        const doc = await this.globalConfigModel.create(restParams);
-        doc.save();
+        await this.globalConfigModel.create(restParams);
 
         return '创建成功';
       } else {
@@ -61,5 +75,10 @@ export class GlobalConfigService {
     } catch (e) {
       Logger.error(e);
     }
+  }
+
+  async clearCache() {
+    this.cacheService.flushall();
+    return '清除成功';
   }
 }

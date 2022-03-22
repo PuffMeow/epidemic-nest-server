@@ -30,6 +30,14 @@ export class CacheService {
     }
   }
 
+  async keys(pattern: string) {
+    return await this.client.keys(pattern);
+  }
+
+  async del(key: string) {
+    await this.client.del(key);
+  }
+
   async isHashExist(key: string, field: string) {
     return this.client.hexists(key, field);
   }

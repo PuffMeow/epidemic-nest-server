@@ -28,4 +28,13 @@ export class GlobalConfigController {
   async saveGlobalConfig(@Body() params: GlobalConfignDto) {
     return this.globalConfigService.saveGlobalConfig(params);
   }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
+  @Post('/clearCache')
+  @ApiOperation({ summary: '清除所有缓存' })
+  async clearCache() {
+    return this.globalConfigService.clearCache();
+  }
 }
