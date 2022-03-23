@@ -28,6 +28,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   // 日志中间件
   app.use(logger);
+  app.setGlobalPrefix('/api');
   await app.listen(configuration.port);
 }
 
