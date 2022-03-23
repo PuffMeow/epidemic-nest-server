@@ -31,7 +31,7 @@ export class GlobalConfigController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.Admin)
   @Post('/clearCache')
   @ApiOperation({ summary: '清除所有缓存' })
   async clearCache() {

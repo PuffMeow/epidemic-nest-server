@@ -30,7 +30,7 @@ export class OcrManagerController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
-  @Roles(Role.Operator)
+  @Roles(Role.Admin)
   @Post('/remove')
   @ApiOperation({ summary: '根据id删除一条ocr数据' })
   async remove(@Body() params: IdOCRDto) {

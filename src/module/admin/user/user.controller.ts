@@ -48,6 +48,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
   @Post('/removeOne')
   @ApiOperation({ summary: '删除用户' })
   async removeUser(@Body() user: RemoveUserDto) {
