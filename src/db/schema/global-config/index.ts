@@ -9,7 +9,7 @@ export class GlobalConfig {
   /** 是否显示公告条 */
   isShowNotify: boolean;
 
-  @Prop({ required: true, default: true })
+  @Prop({ required: true })
   /** 公告条内容 */
   notify: string;
 

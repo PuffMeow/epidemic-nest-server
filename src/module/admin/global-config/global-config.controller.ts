@@ -1,4 +1,4 @@
-import { GlobalConfignDto } from '@/dto';
+import { EntranceConfignDto, GlobalConfignDto } from '@/dto';
 import { JwtGuard } from '@/guards';
 import { Roles } from '@/lib/decorator/role.decorator';
 import { GlobalConfigService } from '@/service/admin/global-config/global-config.service';
@@ -27,6 +27,24 @@ export class GlobalConfigController {
   @ApiOperation({ summary: '更新全局配置' })
   async saveGlobalConfig(@Body() params: GlobalConfignDto) {
     return this.globalConfigService.saveGlobalConfig(params);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Roles(Role.User)
+  @Get('/getEntrance')
+  @ApiOperation({ summary: '查询入口配置' })
+  async getEntranceConfig() {
+    return this.globalConfigService.getEntranceConfig();
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @Roles(Role.Admin)
+  @Post('/saveEntrance')
+  @ApiOperation({ summary: '更新入口配置' })
+  async saveEntranceConfig(@Body() params: EntranceConfignDto) {
+    return this.globalConfigService.saveEntranceConfig(params);
   }
 
   @UseGuards(JwtGuard)

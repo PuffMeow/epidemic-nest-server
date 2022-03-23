@@ -80,6 +80,13 @@ export class EpidemicController {
     return await this.globalConfigService.getGlobalConfig();
   }
 
+  @Get('getEntranceConfig')
+  @ApiOperation({ summary: '获取入口配置' })
+  @ApiOkResponse({ description: '请求成功' })
+  async getEntranceConfig() {
+    return await this.globalConfigService.getEntranceConfig();
+  }
+
   @Post('viewCounter')
   @ApiOperation({ summary: '用户访问统计' })
   @ApiOkResponse({ description: '请求成功' })

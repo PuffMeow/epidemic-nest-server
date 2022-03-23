@@ -19,6 +19,10 @@ import { ViewCounterController } from './view-counter/view-counter.controller';
 import { OcrManagerController } from './ocr-manager/ocr-manager.controller';
 import { OcrManagerService } from '@/service/admin/ocr-manager/ocr-manager.service';
 import { OCR, OCRSchema } from '@/db/schema/ocr-data';
+import {
+  EntranceConfig,
+  EntranceConfigSchema,
+} from '@/db/schema/entrance-config';
 
 @Module({
   providers: [
@@ -35,6 +39,7 @@ import { OCR, OCRSchema } from '@/db/schema/ocr-data';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: GlobalConfig.name, schema: GlobalConfigSchema },
+      { name: EntranceConfig.name, schema: EntranceConfigSchema },
       { name: ViewCounter.name, schema: ViewCounterSchema },
       { name: OCR.name, schema: OCRSchema },
     ]),
