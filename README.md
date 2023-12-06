@@ -51,13 +51,6 @@ $ npm run test:cov
 redis-server.exe redis.windows.conf
 ```
 
-```bash
-# 在管理员模式下启动 mongodb 数据库
-net start MongoDB
-# 连接数据库
-mongo -u 账号 -p 密码
-```
-
 项目中根目录建立.env 文件，里面写入 MongoDB 连接路径地址
 
 ```bash
